@@ -7,8 +7,7 @@
   ],
   "dependencies": {
     "moment": "~2.10.6",
-    "angular": "~1.4.2",
-    "angular-input-masks": "^2.5.0"
+    "angular": "~1.4.2"
   },
   "resolutions": {
     "angular": "~1.4.2"
