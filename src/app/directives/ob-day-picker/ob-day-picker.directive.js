@@ -84,6 +84,8 @@ class ObDayPickerController {
     this.value = this.Moment(this._selectedDay).format(this.getFormat());
     this.setCalendarInterceptors();
     this.calendarApi = {};
+    this.Scope.time = this.Scope.time || new Date(0, 0, 0, 0, 0);
+    this.updateSelectedDate();
 
     this.api && Object.assign(this.api, {
       render: () => {
@@ -146,6 +148,12 @@ class ObDayPickerController {
     ], (min, max) => {
       if ((min && min[0] || (max && max[0]))) {
         this.render();
+      }
+    });
+
+    this.Scope.$watch('time', () => {
+      if (this.Scope.time instanceof Date) {
+        this._selectedDay.hours(this.Scope.time.getHours()).minutes(this.Scope.time.getMinutes());
       }
     });
   }
@@ -260,6 +268,7 @@ class ObDayPickerController {
   }
 
   updateSelectedDate(day = this._selectedDay) {
+    this.Scope.time = new Date(0, 0, 0, 0);
     if (this.format()) {
       this.selectedDay = day.format(this.getFormat());
     } else {

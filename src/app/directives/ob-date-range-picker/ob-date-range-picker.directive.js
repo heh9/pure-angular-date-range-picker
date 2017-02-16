@@ -24,7 +24,7 @@ export function ObDateRangePicker() {
     templateUrl: 'app/directives/ob-date-range-picker/ob-date-range-picker.html',
     controllerAs: 'obDateRangePicker',
     bindToController: true,
-    link: (scope, elem, attrs, ctrl) => {
+    link: (scope, elem, attrs, ctrl, ngModel) => {
       ctrl.init();
     }
   };
@@ -85,6 +85,8 @@ class ObDateRangePickerController {
     this.calendarsAlwaysOn = angular.isDefined(this.calendarsAlwaysOn()) ? this.calendarsAlwaysOn : () => {
       return this.dateRangePickerConf.calendarsAlwaysOn
     };
+    this.Scope.startTime = new Date();
+    this.Scope.endTime = new Date();
 
     this.isCustomVisible = this.calendarsAlwaysOn();
 
@@ -130,9 +132,10 @@ class ObDateRangePickerController {
       };
     } else if (this.Moment.isMoment(this.range.start) && this.Moment.isMoment(this.range.end)) {
       this._range = {
-        start: this.range.start,
-        end: this.range.end
+        start: this.range.start.hours(0).minutes(0),
+        end: this.range.end.hours(0).minutes(0)
       };
+
     } else if (this.preRanges.length > 1) {
       let firstPreRange = this.preRanges[0];
       this._range.start = firstPreRange.start;
@@ -213,6 +216,17 @@ class ObDateRangePickerController {
 
       this.selfChange = false;
     });
+
+    this.Scope.$watchGroup(['startTime', 'endTime'], () => {
+      if (this.Scope.startTime instanceof Date) {
+        this._range.start.hours(this.Scope.startTime.getHours())
+                        .minutes(this.Scope.startTime.getMinutes());
+      }
+      if (this.Scope.endTime instanceof Date) {
+        this._range.end.hours(this.Scope.endTime.getHours())
+                      .minutes(this.Scope.endTime.getMinutes());
+      }
+    });
   }
 
   setOpenCloseLogic() {
@@ -277,6 +291,7 @@ class ObDateRangePickerController {
       this.range.start = range.start;
       this.range.end = range.end;
     }
+    this.Scope.startTime = this.Scope.endTime = new Date(0, 0, 0, 0, 0);
   }
 
   predefinedRangeSelected(range, index) {
@@ -340,7 +355,7 @@ class ObDateRangePickerController {
 
   applyChanges(callApply = true) {
     this.setRange();
-    this.hidePicker();
+    // this.hidePicker();
     this.pickerApi.setCalendarPosition && this.pickerApi.setCalendarPosition(this._range.start, this._range.end);
     if (callApply && this.onApply) {
       this.onApply({start: this._range.start, end: this._range.end});

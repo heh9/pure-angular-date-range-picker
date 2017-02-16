@@ -1,7 +1,7 @@
 <div ng-form="{{::dayPicker.formName}}" class="picker-dropdown-container"
      ng-class="{'open': dayPicker.isPickerVisible,
                 'disabled': dayPicker.disabled(),
-                'invalid': !dayPicker.dayValidity}">
+                'invalid': !dayPicker.dayValidity}" style="height: 340px">
   <input class="picker-input"
          ng-model="dayPicker.value"
          ng-change="dayPicker.updateValidity()"
@@ -22,5 +22,8 @@
               month-format="dayPicker.monthFormat()"
               show-input="false">
     </calendar>
+    <div class="time" style="margin-top:20px">
+      <input type="time" ng-model="time">
+    </div>
   </div>
 </div>

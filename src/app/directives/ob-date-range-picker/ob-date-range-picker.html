@@ -17,21 +17,9 @@
         input-format="obDateRangePicker.inputFormat()">
       </date-range-picker>
     </div>
-
-    <div class="ranges-actions" ng-class="{'custom-open': obDateRangePicker.isCustomVisible}">
-      <div class="ranges">
-        <div class="range"
-             ng-repeat="range in obDateRangePicker.preRanges track by $index"
-             ng-class="{'selected': obDateRangePicker.selectedRengeIndex === $index, 'disabled': range.disabled}"
-             ng-click="obDateRangePicker.predefinedRangeSelected(range, $index)"
-             ng-if="!$last || ($last && !obDateRangePicker.calendarsAlwaysOn())">{{range.name}}
-        </div>
-      </div>
-
-      <div class="actions" ng-if="!obDateRangePicker.autoApply()">
-        <div class="drp_btn cancel" ng-click="obDateRangePicker.discardChanges()">Cancel</div>
-        <div class="drp_btn apply" ng-click="obDateRangePicker.applyChanges()">APPLY</div>
-      </div>
+    <div class="time">
+      <input type="time" ng-model="startTime">
+      <input type="time" ng-model="endTime">
     </div>
   </div>
 </div>

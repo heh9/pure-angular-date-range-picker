@@ -48,7 +48,7 @@ ob-daterangepicker {
 
     .picker {
       box-sizing: border-box;
-      height: 288px;
+      height: 320px;
       position: absolute;
       white-space: nowrap;
       overflow: visible;
@@ -129,6 +129,11 @@ ob-daterangepicker {
       .date-range {
         padding: 10px;
         display: inline-block;
+      }
+
+      .time {
+        margin-top: 10px;
+        padding: 10px;
       }
     }
   }
