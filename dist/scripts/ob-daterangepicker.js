@@ -1079,6 +1079,7 @@
 	        if (_this4.Scope.startTime instanceof Date && _this4.Scope.endTime instanceof Date) {
 	          _this4._range.start.hours(_this4.Scope.startTime.getHours()).minutes(_this4.Scope.startTime.getMinutes());
 	          _this4._range.end.hours(_this4.Scope.endTime.getHours()).minutes(_this4.Scope.endTime.getMinutes());
+	          _this4.value = _this4.getRangeValue();
 	          _this4.updateTime();
 	        }
 	      });
@@ -1375,12 +1376,12 @@
 
 	      this.formName = this.formName || 'dayPickerInput';
 
+	      this.Scope.time = this.Scope.time || new Date(0, 0, 0, 0, 0);
 	      this.setOpenCloseLogic();
 	      this._selectedDay = this.getSelectedDay();
-	      this.value = this.Moment(this._selectedDay).format(this.getFormat());
 	      this.setCalendarInterceptors();
 	      this.calendarApi = {};
-	      this.Scope.time = this.Scope.time || new Date(0, 0, 0, 0, 0);
+	      this.value = this.Moment(this._selectedDay).format(this.getFormat());
 	      this.updateSelectedDate();
 
 	      this.api && _extends(this.api, {
@@ -1457,6 +1458,7 @@
 	      this.Scope.$watch('time', function () {
 	        if (_this2.Scope.time instanceof Date) {
 	          _this2._selectedDay.hours(_this2.Scope.time.getHours()).minutes(_this2.Scope.time.getMinutes());
+	          _this2.value = _this2.Moment(_this2._selectedDay).format(_this2.getFormat());
 	        }
 	      });
 	    }
@@ -1599,7 +1601,7 @@
 	  }, {
 	    key: 'getSelectedDay',
 	    value: function getSelectedDay() {
-	      return this.Moment(this.selectedDay || this.Moment(), this.getFormat());
+	      return this.Moment(this.selectedDay || this.Moment().hours(this.Scope.time.getHours()).minutes(this.Scope.time.getMinutes()), this.getFormat());
 	    }
 	  }, {
 	    key: 'getFormat',

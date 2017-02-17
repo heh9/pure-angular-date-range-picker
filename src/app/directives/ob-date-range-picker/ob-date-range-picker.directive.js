@@ -223,6 +223,7 @@ class ObDateRangePickerController {
                         .minutes(this.Scope.startTime.getMinutes());
         this._range.end.hours(this.Scope.endTime.getHours())
                       .minutes(this.Scope.endTime.getMinutes());
+        this.value = this.getRangeValue();
         this.updateTime();
       }
     });

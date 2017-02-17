@@ -79,12 +79,12 @@ class ObDayPickerController {
 
     this.formName = this.formName || 'dayPickerInput';
 
+    this.Scope.time = this.Scope.time || new Date(0, 0, 0, 0, 0);
     this.setOpenCloseLogic();
     this._selectedDay = this.getSelectedDay();
-    this.value = this.Moment(this._selectedDay).format(this.getFormat());
     this.setCalendarInterceptors();
     this.calendarApi = {};
-    this.Scope.time = this.Scope.time || new Date(0, 0, 0, 0, 0);
+    this.value = this.Moment(this._selectedDay).format(this.getFormat());
     this.updateSelectedDate();
 
     this.api && Object.assign(this.api, {
@@ -154,6 +154,7 @@ class ObDayPickerController {
     this.Scope.$watch('time', () => {
       if (this.Scope.time instanceof Date) {
         this._selectedDay.hours(this.Scope.time.getHours()).minutes(this.Scope.time.getMinutes());
+        this.value = this.Moment(this._selectedDay).format(this.getFormat());
       }
     });
   }
@@ -279,7 +280,7 @@ class ObDayPickerController {
   }
 
   getSelectedDay() {
-    return this.Moment(this.selectedDay || this.Moment(), this.getFormat());
+    return this.Moment(this.selectedDay || this.Moment().hours(this.Scope.time.getHours()).minutes(this.Scope.time.getMinutes()), this.getFormat());
   }
 
   getFormat() {
