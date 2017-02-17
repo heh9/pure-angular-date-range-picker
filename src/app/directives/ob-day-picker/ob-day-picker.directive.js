@@ -178,7 +178,7 @@ class ObDayPickerController {
       this._selectedDay = day;
 
       this.$timeout(() => {
-        this.hidePicker();
+        //this.hidePicker();
         this.updateSelectedDate(day);
       }, timeout);
     } else {
