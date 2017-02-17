@@ -863,7 +863,7 @@
 	    templateUrl: 'app/directives/ob-date-range-picker/ob-date-range-picker.html',
 	    controllerAs: 'obDateRangePicker',
 	    bindToController: true,
-	    link: function link(scope, elem, attrs, ctrl, ngModel) {
+	    link: function link(scope, elem, attrs, ctrl) {
 	      ctrl.init();
 	    }
 	  };
@@ -1076,11 +1076,10 @@
 	      });
 
 	      this.Scope.$watchGroup(['startTime', 'endTime'], function () {
-	        if (_this4.Scope.startTime instanceof Date) {
+	        if (_this4.Scope.startTime instanceof Date && _this4.Scope.endTime instanceof Date) {
 	          _this4._range.start.hours(_this4.Scope.startTime.getHours()).minutes(_this4.Scope.startTime.getMinutes());
-	        }
-	        if (_this4.Scope.endTime instanceof Date) {
 	          _this4._range.end.hours(_this4.Scope.endTime.getHours()).minutes(_this4.Scope.endTime.getMinutes());
+	          _this4.updateTime();
 	        }
 	      });
 	    }
@@ -1143,6 +1142,14 @@
 	    key: 'hidePicker',
 	    value: function hidePicker() {
 	      this.isPickerVisible = false;
+	    }
+	  }, {
+	    key: 'updateTime',
+	    value: function updateTime() {
+	      var range = arguments.length <= 0 || arguments[0] === undefined ? this._range : arguments[0];
+
+	      this.range.start = range.start;
+	      this.range.end = range.end;
 	    }
 	  }, {
 	    key: 'setRange',

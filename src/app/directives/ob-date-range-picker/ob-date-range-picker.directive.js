@@ -24,7 +24,7 @@ export function ObDateRangePicker() {
     templateUrl: 'app/directives/ob-date-range-picker/ob-date-range-picker.html',
     controllerAs: 'obDateRangePicker',
     bindToController: true,
-    link: (scope, elem, attrs, ctrl, ngModel) => {
+    link: (scope, elem, attrs, ctrl) => {
       ctrl.init();
     }
   };
