@@ -218,13 +218,12 @@ class ObDateRangePickerController {
     });
 
     this.Scope.$watchGroup(['startTime', 'endTime'], () => {
-      if (this.Scope.startTime instanceof Date) {
+      if (this.Scope.startTime instanceof Date && this.Scope.endTime instanceof Date) {
         this._range.start.hours(this.Scope.startTime.getHours())
                         .minutes(this.Scope.startTime.getMinutes());
-      }
-      if (this.Scope.endTime instanceof Date) {
         this._range.end.hours(this.Scope.endTime.getHours())
                       .minutes(this.Scope.endTime.getMinutes());
+        this.updateTime();
       }
     });
   }
@@ -281,6 +280,11 @@ class ObDateRangePickerController {
 
   hidePicker() {
     this.isPickerVisible = false;
+  }
+
+  updateTime(range = this._range) {
+    this.range.start = range.start;
+    this.range.end = range.end;
   }
 
   setRange(range = this._range) {
