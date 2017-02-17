@@ -1,7 +1,10 @@
 {
   "name": "ob-daterangepicker-forked",
   "description": "forked version of ob-daterangepicker with hours picker and some fixes",
-  "main": "dist/scripts/ob-daterangepicker.js",
+  "main": [
+    "dist/scripts/ob-daterangepicker.js",
+    "dist/styles/ob-daterangepicker.css"
+  ],
   "authors": [
     "Vladimir Iacob <vladimir.iacob@everymatrix.com>"
   ],
