@@ -163,23 +163,14 @@
 
       <div class="ob-datepicker-container">
         <ob-daterangepicker
-          ng-class="{'up': range.dropsUp}"
-          class="{{range.opens}}"
-          min-day="range.min"
-          max-day="range.max"
-          linked-calendars="range.linked"
-          api="range.dateRangeApi"
-          on-apply="range.rangeApplied(start, end)"
-          ranges="range.ranges"
-          range="range.range"
-          week-start="range.weekStart"
-          auto-apply="true"
-          disabled="range.disabled"
-          calendars-always-on="range.calendarsAlwaysOn">
+           range="range"
+           class="right"
+           calendars-always-on="true"
+           auto-apply="true">
         </ob-daterangepicker>
       </div>
       <br/>
-      <div>{{ range.range.start.format('DD MMMM YYYY HH:mm') }} - {{ range.range.end.format('DD MMMM YYYY HH:mm') }}</div>
+      <div>{{ range.start.format('DD MMMM YYYY HH:mm') }} - {{ range.end.format('DD MMMM YYYY HH:mm') }}</div>
     </div>
 
     <hr />
@@ -243,22 +234,16 @@
       <div class="ob-daypicker-container">
         <form name="testForm">
           <ob-daypicker
-            name="pickerOne"
-            auto-apply="single.autoApply"
-            class="{{single.opens}}"
-            selected-day="single.selectedDay"
-            api="single.dayPickerApi"
-            on-apply="single.onApply(day)"
-            week-start="single.weekStart"
-            valid-day="single.validateInput"
-            disabled="false">
+              class="left"
+              selected-day="selected"
+              auto-apply="false">
           </ob-daypicker>
           <span class="error-message" ng-if="testForm.pickerOne.$invalid">Invalid Date</span>
         </form>
       </div>
 
       <div>
-        selected: {{single.selectedDay.format('DD MMMM YYYY HH:mm')}}
+        selected: {{selected.format('DD MMMM YYYY HH:mm')}}
       </div>
 
       <!--<pre>-->

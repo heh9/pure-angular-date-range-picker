@@ -1185,7 +1185,7 @@
 	  }, {
 	    key: 'getFormat',
 	    value: function getFormat() {
-	      return this.format() || 'MM-DD-YYYY';
+	      return this.format() || 'DD/MM/YYYY HH:mm';
 	    }
 	  }, {
 	    key: 'discardChanges',
@@ -1246,7 +1246,7 @@
 	  }, {
 	    key: 'getInputFormat',
 	    value: function getInputFormat() {
-	      return this.inputFormat() || 'MMM DD, YYYY';
+	      return this.inputFormat() || 'DD/MM/YYYY HH:mm';
 	    }
 	  }, {
 	    key: 'setDateRange',
@@ -1488,7 +1488,7 @@
 	        this._selectedDay = day;
 
 	        this.$timeout(function () {
-	          _this3.hidePicker();
+	          //this.hidePicker();
 	          _this3.updateSelectedDate(day);
 	        }, timeout);
 	      } else {
@@ -1604,7 +1604,7 @@
 	  }, {
 	    key: 'getFormat',
 	    value: function getFormat() {
-	      return this.format() || 'MMM DD, YYYY';
+	      return this.format() || 'DD/MM/YYYY HH:mm';
 	    }
 	  }, {
 	    key: '_getMinDay',

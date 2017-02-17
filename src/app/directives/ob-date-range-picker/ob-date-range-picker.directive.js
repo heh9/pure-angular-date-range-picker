@@ -315,7 +315,7 @@ class ObDateRangePickerController {
   }
 
   getFormat() {
-    return this.format() || 'MM-DD-YYYY';
+    return this.format() || 'DD/MM/YYYY HH:mm';
   }
 
   discardChanges() {
@@ -367,7 +367,7 @@ class ObDateRangePickerController {
   }
 
   getInputFormat() {
-    return this.inputFormat() || 'MMM DD, YYYY';
+    return this.inputFormat() || 'DD/MM/YYYY HH:mm';
   }
 
   setDateRange(range) {
