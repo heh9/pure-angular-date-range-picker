@@ -133,8 +133,8 @@ class ObDateRangePickerController {
       };
     } else if (this.Moment.isMoment(this.range.start) && this.Moment.isMoment(this.range.end)) {
       this._range = {
-        start: this.range.start.hours(0).minutes(0),
-        end: this.range.end.hours(0).minutes(0)
+        start: this.range.start,
+        end: this.range.end
       };
 
     } else if (this.preRanges.length > 1) {
