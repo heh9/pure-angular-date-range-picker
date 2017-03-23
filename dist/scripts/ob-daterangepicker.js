@@ -198,7 +198,7 @@
 	      _extends(api, {
 	        setCalendarPosition: function setCalendarPosition(start, end) {
 	          _this.startCalendar = start;
-	          if (_this.linkedCalendars() || start.isSame(end, 'M')) {
+	          if (_this.linkedCalendars() || start !== null && start.isSame(end, 'M')) {
 	            _this.endCalendar = _this.startCalendar.clone().add(1, 'M');
 	          } else {
 	            _this.endCalendar = end;
@@ -233,12 +233,16 @@
 	      if (this.isMomentRange(this.range)) {
 	        start = this.range.start;
 	        end = this.range.end;
+	        end = end.diff(start) >= 0 ? end : start.clone();
+	      } else if (this.range.start === null && this.range.end === null) {
+	        start = null;
+	        end = null;
 	      } else {
 	        start = this.Moment(this.range.start, this.getFormat());
 	        end = this.Moment(this.range.end, this.getFormat());
+	        end = end.diff(start) >= 0 ? end : start.clone();
 	      }
 
-	      end = end.diff(start) >= 0 ? end : start.clone();
 	      this.rangeStart = start;
 	      this.rangeEnd = end;
 	      this.daysSelected = 2;
@@ -251,8 +255,8 @@
 	        this.range.start = this.rangeStart;
 	        this.range.end = this.rangeEnd;
 	      } else {
-	        this.range.start = this.rangeStart ? this.rangeStart.format(this.getFormat()) : null;
-	        this.range.end = this.rangeEnd ? this.rangeEnd.format(this.getFormat()) : null;
+	        this.range.start = this.rangeStart ? this.rangeStart : null;
+	        this.range.end = this.rangeEnd ? this.rangeEnd : null;
 	      }
 	    }
 	  }, {
@@ -431,6 +435,9 @@
 	        }
 
 	        if (!_this4.startCalendar && !_this4.endCalendar) {
+	          if (newStart === null) {
+	            newStart = _this4.Moment(new Date()).startOf('day');
+	          }
 	          _this4.startCalendar = newStart;
 	          _this4.endCalendar = newStart.clone().add(1, 'M');
 	        }
@@ -942,6 +949,7 @@
 	      this.api && _extends(this.api, {
 	        setDateRange: this.setDateRange.bind(this),
 	        togglePicker: this.togglePicker.bind(this),
+	        isPickerOpen: this.isPickerOpen.bind(this),
 	        render: function render() {
 	          _this.render();
 	          _this.pickerApi.render();
@@ -983,12 +991,19 @@
 	        var firstPreRange = this.preRanges[0];
 	        this._range.start = firstPreRange.start;
 	        this._range.end = firstPreRange.end;
+	      } else if (this.range.start === null && this.range.end === null) {
+	        this._range = {
+	          start: null,
+	          end: null
+	        };
 	      }
 
-	      if (this._range.start.isAfter(this._range.end)) {
-	        this._range.start = this._range.end.clone();
-	      } else if (this._range.end.isBefore(this._range.start)) {
-	        this._range.end = this._range.start.clone();
+	      if (this.range.start !== null && this.range.end !== null) {
+	        if (this._range.start.isAfter(this._range.end)) {
+	          this._range.start = this._range.end.clone();
+	        } else if (this._range.end.isBefore(this._range.start)) {
+	          this._range.end = this._range.start.clone();
+	        }
 	      }
 
 	      this.applyMinMaxDaysToRange();
@@ -1077,8 +1092,10 @@
 
 	      this.Scope.$watchGroup(['startTime', 'endTime'], function () {
 	        if (_this4.Scope.startTime instanceof Date && _this4.Scope.endTime instanceof Date) {
-	          _this4._range.start.hours(_this4.Scope.startTime.getHours()).minutes(_this4.Scope.startTime.getMinutes());
-	          _this4._range.end.hours(_this4.Scope.endTime.getHours()).minutes(_this4.Scope.endTime.getMinutes());
+	          if (_this4._range.start && _this4._range.end) {
+	            _this4._range.start.hours(_this4.Scope.startTime.getHours()).minutes(_this4.Scope.startTime.getMinutes());
+	            _this4._range.end.hours(_this4.Scope.endTime.getHours()).minutes(_this4.Scope.endTime.getMinutes());
+	          }
 	          _this4.value = _this4.getRangeValue();
 	          _this4.updateTime();
 	        }
@@ -1145,6 +1162,11 @@
 	      this.isPickerVisible = false;
 	    }
 	  }, {
+	    key: 'isPickerOpen',
+	    value: function isPickerOpen() {
+	      return this.isPickerVisible;
+	    }
+	  }, {
 	    key: 'updateTime',
 	    value: function updateTime() {
 	      var range = arguments.length <= 0 || arguments[0] === undefined ? this._range : arguments[0];
@@ -1164,7 +1186,9 @@
 	        this.range.start = range.start;
 	        this.range.end = range.end;
 	      }
-	      this.Scope.startTime = this.Scope.endTime = new Date(0, 0, 0, 0, 0);
+	      this.Scope.startTime = new Date(this.range.start);
+	      this.Scope.endTime = new Date(this.range.end);
+	      //this.Scope.startTime = this.Scope.endTime = new Date(0, 0, 0, 0, 0);
 	    }
 	  }, {
 	    key: 'predefinedRangeSelected',
@@ -1192,8 +1216,8 @@
 	    key: 'discardChanges',
 	    value: function discardChanges() {
 	      var format = this.getFormat();
-	      var start = this.Moment(this.range.start, format);
-	      var end = this.Moment(this.range.end, format);
+	      var start = this.range.start === null ? null : this.Moment(this.range.start, format);
+	      var end = this.range.end === null ? null : this.Moment(this.range.end, format);
 	      this._range.start = start;
 	      this._range.end = end;
 	      this.value = this.getRangeValue();
@@ -1226,6 +1250,8 @@
 	            value = this.preRanges[index].name;
 	          }
 	        }
+	      } else if (this._range.start === null && this._range.end === null) {
+	        value = '';
 	      } else {
 	        value = this._range.start.format(format) + ' - ' + this._range.end.format(format);
 	      }
@@ -1254,7 +1280,7 @@
 	    value: function setDateRange(range) {
 	      this._range.start = range.start;
 	      this._range.end = range.end;
-	      this.applyChanges(false);'';
+	      this.applyChanges(false);
 	    }
 	  }, {
 	    key: '_getMinDay',
@@ -1658,6 +1684,6 @@
 /******/ ]);
 angular.module("obDateRangePicker").run(["$templateCache", function($templateCache) {$templateCache.put("app/directives/calendar/calendar.html","<div class=\"input-container\" ng-if=\"month._showInput()\"><label>{{month.Attrs.label}}</label> <input type=\"text\" ng-model=\"month.value\" ng-keypress=\"month.dateInputEntered($event, month.value)\" ng-blur=\"month.dateInputSelected($event, month.value)\"></div><div class=\"header\"><span class=\"arrow-btn left\" ng-if=\"month.showLeftArrow()\" ng-click=\"month.moveToPrev()\"></span> <span class=\"date\">{{month.getFormattedMonth(month.calendar.currentCalendar)}}</span> <span class=\"arrow-btn right\" ng-if=\"month.showRightArrow()\" ng-click=\"month.moveToNext(1)\"></span></div><div class=\"board\"><div class=\"days-of-week\"><span class=\"day-name\" ng-repeat=\"day in month.daysName track by $index\">{{day}}</span></div><div class=\"weeks\"><div ng-repeat=\"week in month.calendar.monthWeeks track by $index\"><span class=\"day\" ng-repeat=\"day in week track by $index\" ng-class=\"{ \'selected\': day.selected, \'current\': day.currentDay, \'other-month\': !day.currentMonth, \'in-range\': day.inRange, \'range-start\': day.rangeStart, \'range-end\': day.rangeEnd, \'disabled\': day.disabled }\" ng-click=\"month.daySelected(day)\">{{day.mo.format(\'D\')}}</span></div></div></div>");
 $templateCache.put("app/directives/date-range-picker/date-range-picker.html","<calendar class=\"calendar\" api=\"picker.startCalendarApi\" min-day=\"picker.minDay()\" max-day=\"picker.maxDay()\" week-start=\"picker.weekStart()\" month=\"picker.startCalendar\" interceptors=\"picker.startCalendarInterceptors\" range-start=\"picker.rangeStart\" range-end=\"picker.rangeEnd\" selected-day=\"picker.rangeStart\" max-month=\"picker.endCalendar\" week-days-name=\"picker.weekDaysName()\" month-format=\"picker.monthFormat()\" input-format=\"picker.inputFormat()\" label=\"Start Date\"></calendar><calendar class=\"calendar\" api=\"picker.endCalendarApi\" min-day=\"picker.minDay()\" max-day=\"picker.maxDay()\" week-start=\"picker.weekStart()\" month=\"picker.endCalendar\" interceptors=\"picker.endCalendarInterceptors\" range-start=\"picker.rangeStart\" range-end=\"picker.rangeEnd\" selected-day=\"picker.rangeEnd\" min-month=\"picker.startCalendar\" week-days-name=\"picker.weekDaysName()\" month-format=\"picker.monthFormat()\" input-format=\"picker.inputFormat()\" label=\"End Date\"></calendar>");
-$templateCache.put("app/directives/ob-date-range-picker/ob-date-range-picker.html","<div class=\"picker-dropdown-container\" ng-class=\"{\'disabled\': obDateRangePicker.disabled()}\"><div class=\"picker-dropdown\" ng-class=\"{\'open\': obDateRangePicker.isPickerVisible}\" ng-click=\"obDateRangePicker.togglePicker()\"><span>{{obDateRangePicker.value}}</span></div><div class=\"picker\" ng-class=\"{\'open\': obDateRangePicker.isPickerVisible}\" ng-show=\"obDateRangePicker.isPickerVisible\"><div class=\"date-range\" ng-show=\"obDateRangePicker.isCustomVisible\"><date-range-picker ng-if=\"obDateRangePicker.isPickerVisible\" api=\"obDateRangePicker.pickerApi\" interceptors=\"obDateRangePicker.pickerInterceptors\" linked-calendars=\"obDateRangePicker.linkedCalendars()\" week-start=\"obDateRangePicker.weekStart()\" range=\"obDateRangePicker._range\" week-days-name=\"obDateRangePicker.weekDaysName()\" min-day=\"obDateRangePicker._getMinDay()\" max-day=\"obDateRangePicker._getMaxDay()\" month-format=\"obDateRangePicker.monthFormat()\" input-format=\"obDateRangePicker.inputFormat()\"></date-range-picker></div><div class=\"time\"><input type=\"time\" ng-model=\"startTime\"> <input type=\"time\" ng-model=\"endTime\"></div></div></div>");
-$templateCache.put("app/directives/ob-day-picker/ob-day-picker.html","<div ng-form=\"{{::dayPicker.formName}}\" class=\"picker-dropdown-container\" ng-class=\"{\'open\': dayPicker.isPickerVisible, \'disabled\': dayPicker.disabled(), \'invalid\': !dayPicker.dayValidity}\" style=\"height: 340px\"><input class=\"picker-input\" ng-model=\"dayPicker.value\" ng-change=\"dayPicker.updateValidity()\" ng-keydown=\"dayPicker.dateInputEntered($event, dayPicker.value)\" ng-click=\"dayPicker.showPicker()\" ng-disabled=\"dayPicker.disabled()\"><div class=\"picker\" ng-show=\"dayPicker.isPickerVisible\"><calendar class=\"calendar\" api=\"dayPicker.calendarApi\" min-day=\"dayPicker._getMinDay()\" max-day=\"dayPicker._getMaxDay()\" week-start=\"dayPicker.weekStart()\" month=\"dayPicker._selectedDay\" interceptors=\"dayPicker.calendarInterceptors\" selected-day=\"dayPicker._selectedDay\" min-month=\"dayPicker.startCalendar\" week-days-name=\"dayPicker.weekDaysName()\" month-format=\"dayPicker.monthFormat()\" show-input=\"false\"></calendar><div class=\"time\" style=\"margin-top:20px\"><input type=\"time\" ng-model=\"time\"></div></div></div>");}]);
+$templateCache.put("app/directives/ob-day-picker/ob-day-picker.html","<div ng-form=\"{{::dayPicker.formName}}\" class=\"picker-dropdown-container\" ng-class=\"{\'open\': dayPicker.isPickerVisible, \'disabled\': dayPicker.disabled(), \'invalid\': !dayPicker.dayValidity}\" style=\"height: 340px\"><input class=\"picker-input\" ng-model=\"dayPicker.value\" ng-change=\"dayPicker.updateValidity()\" ng-keydown=\"dayPicker.dateInputEntered($event, dayPicker.value)\" ng-click=\"dayPicker.showPicker()\" ng-disabled=\"dayPicker.disabled()\"><div class=\"picker\" ng-show=\"dayPicker.isPickerVisible\"><calendar class=\"calendar\" api=\"dayPicker.calendarApi\" min-day=\"dayPicker._getMinDay()\" max-day=\"dayPicker._getMaxDay()\" week-start=\"dayPicker.weekStart()\" month=\"dayPicker._selectedDay\" interceptors=\"dayPicker.calendarInterceptors\" selected-day=\"dayPicker._selectedDay\" min-month=\"dayPicker.startCalendar\" week-days-name=\"dayPicker.weekDaysName()\" month-format=\"dayPicker.monthFormat()\" show-input=\"false\"></calendar><div class=\"time\" style=\"margin-top:20px\"><input type=\"time\" ng-model=\"time\"></div></div></div>");
+$templateCache.put("app/directives/ob-date-range-picker/ob-date-range-picker.html","<div class=\"picker-dropdown-container\" ng-class=\"{\'disabled\': obDateRangePicker.disabled()}\"><div class=\"picker-dropdown\" ng-class=\"{\'open\': obDateRangePicker.isPickerVisible}\" ng-click=\"obDateRangePicker.togglePicker()\"><span>{{obDateRangePicker.value}}</span></div><div class=\"picker\" ng-class=\"{\'open\': obDateRangePicker.isPickerVisible}\" ng-show=\"obDateRangePicker.isPickerVisible\"><div class=\"date-range\" ng-show=\"obDateRangePicker.isCustomVisible\"><date-range-picker ng-if=\"obDateRangePicker.isPickerVisible\" api=\"obDateRangePicker.pickerApi\" interceptors=\"obDateRangePicker.pickerInterceptors\" linked-calendars=\"obDateRangePicker.linkedCalendars()\" week-start=\"obDateRangePicker.weekStart()\" range=\"obDateRangePicker._range\" week-days-name=\"obDateRangePicker.weekDaysName()\" min-day=\"obDateRangePicker._getMinDay()\" max-day=\"obDateRangePicker._getMaxDay()\" month-format=\"obDateRangePicker.monthFormat()\" input-format=\"obDateRangePicker.inputFormat()\"></date-range-picker></div><div class=\"time\"><input type=\"time\" ng-model=\"startTime\"> <input type=\"time\" ng-model=\"endTime\"></div></div></div>");}]);
 //# sourceMappingURL=../maps/scripts/ob-daterangepicker.js.map

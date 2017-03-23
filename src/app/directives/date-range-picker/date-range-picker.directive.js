@@ -273,7 +273,7 @@ class DateRangePickerController {
 
       if (!this.startCalendar && !this.endCalendar) {
         if (newStart === null) {
-          newStart = moment(new Date()).startOf('day');
+          newStart = this.Moment(new Date()).startOf('day');
         }
         this.startCalendar = newStart;
         this.endCalendar = newStart.clone().add(1, 'M');
