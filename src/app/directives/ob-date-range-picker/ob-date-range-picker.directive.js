@@ -97,6 +97,7 @@ class ObDateRangePickerController {
     this.api && Object.assign(this.api, {
       setDateRange: this.setDateRange.bind(this),
       togglePicker: this.togglePicker.bind(this),
+      isPickerOpen: this.isPickerOpen.bind(this),
       render: () => {
         this.render();
         this.pickerApi.render();
@@ -140,12 +141,20 @@ class ObDateRangePickerController {
       let firstPreRange = this.preRanges[0];
       this._range.start = firstPreRange.start;
       this._range.end = firstPreRange.end;
+
+    } else if (this.range.start === null && this.range.end === null) {
+      this._range = {
+        start: null,
+        end: null
+      };
     }
 
-    if (this._range.start.isAfter(this._range.end)) {
-      this._range.start = this._range.end.clone();
-    } else if (this._range.end.isBefore(this._range.start)) {
-      this._range.end = this._range.start.clone();
+    if (this.range.start !== null && this.range.end !== null) {
+      if (this._range.start.isAfter(this._range.end)) {
+        this._range.start = this._range.end.clone();
+      } else if (this._range.end.isBefore(this._range.start)) {
+        this._range.end = this._range.start.clone();
+      }
     }
 
     this.applyMinMaxDaysToRange();
@@ -219,10 +228,12 @@ class ObDateRangePickerController {
 
     this.Scope.$watchGroup(['startTime', 'endTime'], () => {
       if (this.Scope.startTime instanceof Date && this.Scope.endTime instanceof Date) {
-        this._range.start.hours(this.Scope.startTime.getHours())
-                        .minutes(this.Scope.startTime.getMinutes());
-        this._range.end.hours(this.Scope.endTime.getHours())
-                      .minutes(this.Scope.endTime.getMinutes());
+        if (this._range.start && this._range.end) {
+          this._range.start.hours(this.Scope.startTime.getHours())
+            .minutes(this.Scope.startTime.getMinutes());
+          this._range.end.hours(this.Scope.endTime.getHours())
+            .minutes(this.Scope.endTime.getMinutes());
+        }
         this.value = this.getRangeValue();
         this.updateTime();
       }
@@ -283,6 +294,10 @@ class ObDateRangePickerController {
     this.isPickerVisible = false;
   }
 
+  isPickerOpen() {
+    return this.isPickerVisible;
+  }
+
   updateTime(range = this._range) {
     this.range.start = range.start;
     this.range.end = range.end;
@@ -296,7 +311,9 @@ class ObDateRangePickerController {
       this.range.start = range.start;
       this.range.end = range.end;
     }
-    this.Scope.startTime = this.Scope.endTime = new Date(0, 0, 0, 0, 0);
+    this.Scope.startTime = new Date(this.range.start);
+    this.Scope.endTime = new Date(this.range.end);
+    //this.Scope.startTime = this.Scope.endTime = new Date(0, 0, 0, 0, 0);
   }
 
   predefinedRangeSelected(range, index) {
@@ -321,8 +338,8 @@ class ObDateRangePickerController {
 
   discardChanges() {
     let format = this.getFormat();
-    let start = this.Moment(this.range.start, format);
-    let end = this.Moment(this.range.end, format);
+    let start = this.range.start === null ? null : this.Moment(this.range.start, format);
+    let end = this.range.end === null ? null : this.Moment(this.range.end, format);
     this._range.start = start;
     this._range.end = end;
     this.value = this.getRangeValue();
@@ -351,6 +368,8 @@ class ObDateRangePickerController {
           value = this.preRanges[index].name;
         }
       }
+    } else if ( this._range.start === null &&  this._range.end === null) {
+      value = '';
     } else {
       value = `${this._range.start.format(format)} - ${this._range.end.format(format)}`;
     }
@@ -374,7 +393,7 @@ class ObDateRangePickerController {
   setDateRange(range) {
     this._range.start = range.start;
     this._range.end = range.end;
-    this.applyChanges(false);``
+    this.applyChanges(false);
   }
 
   _getMinDay() {
