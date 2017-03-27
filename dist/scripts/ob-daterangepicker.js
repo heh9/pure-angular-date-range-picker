@@ -198,7 +198,7 @@
 	      _extends(api, {
 	        setCalendarPosition: function setCalendarPosition(start, end) {
 	          _this.startCalendar = start;
-	          if (_this.linkedCalendars() || start.isSame(end, 'M')) {
+	          if (_this.linkedCalendars() || start !== null && start.isSame(end, 'M')) {
 	            _this.endCalendar = _this.startCalendar.clone().add(1, 'M');
 	          } else {
 	            _this.endCalendar = end;
@@ -233,12 +233,16 @@
 	      if (this.isMomentRange(this.range)) {
 	        start = this.range.start;
 	        end = this.range.end;
+	        end = end.diff(start) >= 0 ? end : start.clone();
+	      } else if (this.range.start === null && this.range.end === null) {
+	        start = null;
+	        end = null;
 	      } else {
 	        start = this.Moment(this.range.start, this.getFormat());
 	        end = this.Moment(this.range.end, this.getFormat());
+	        end = end.diff(start) >= 0 ? end : start.clone();
 	      }
 
-	      end = end.diff(start) >= 0 ? end : start.clone();
 	      this.rangeStart = start;
 	      this.rangeEnd = end;
 	      this.daysSelected = 2;
@@ -251,8 +255,8 @@
 	        this.range.start = this.rangeStart;
 	        this.range.end = this.rangeEnd;
 	      } else {
-	        this.range.start = this.rangeStart ? this.rangeStart.format(this.getFormat()) : null;
-	        this.range.end = this.rangeEnd ? this.rangeEnd.format(this.getFormat()) : null;
+	        this.range.start = this.rangeStart ? this.rangeStart : null;
+	        this.range.end = this.rangeEnd ? this.rangeEnd : null;
 	      }
 	    }
 	  }, {
@@ -431,6 +435,9 @@
 	        }
 
 	        if (!_this4.startCalendar && !_this4.endCalendar) {
+	          if (newStart === null) {
+	            newStart = _this4.Moment(new Date()).startOf('day');
+	          }
 	          _this4.startCalendar = newStart;
 	          _this4.endCalendar = newStart.clone().add(1, 'M');
 	        }
@@ -942,6 +949,7 @@
 	      this.api && _extends(this.api, {
 	        setDateRange: this.setDateRange.bind(this),
 	        togglePicker: this.togglePicker.bind(this),
+	        isPickerOpen: this.isPickerOpen.bind(this),
 	        render: function render() {
 	          _this.render();
 	          _this.pickerApi.render();
@@ -976,19 +984,26 @@
 	        };
 	      } else if (this.Moment.isMoment(this.range.start) && this.Moment.isMoment(this.range.end)) {
 	        this._range = {
-	          start: this.range.start.hours(0).minutes(0),
-	          end: this.range.end.hours(0).minutes(0)
+	          start: this.range.start,
+	          end: this.range.end
 	        };
 	      } else if (this.preRanges.length > 1) {
 	        var firstPreRange = this.preRanges[0];
 	        this._range.start = firstPreRange.start;
 	        this._range.end = firstPreRange.end;
+	      } else if (this.range.start === null && this.range.end === null) {
+	        this._range = {
+	          start: null,
+	          end: null
+	        };
 	      }
 
-	      if (this._range.start.isAfter(this._range.end)) {
-	        this._range.start = this._range.end.clone();
-	      } else if (this._range.end.isBefore(this._range.start)) {
-	        this._range.end = this._range.start.clone();
+	      if (this.range.start !== null && this.range.end !== null) {
+	        if (this._range.start.isAfter(this._range.end)) {
+	          this._range.start = this._range.end.clone();
+	        } else if (this._range.end.isBefore(this._range.start)) {
+	          this._range.end = this._range.start.clone();
+	        }
 	      }
 
 	      this.applyMinMaxDaysToRange();
@@ -1077,8 +1092,10 @@
 
 	      this.Scope.$watchGroup(['startTime', 'endTime'], function () {
 	        if (_this4.Scope.startTime instanceof Date && _this4.Scope.endTime instanceof Date) {
-	          _this4._range.start.hours(_this4.Scope.startTime.getHours()).minutes(_this4.Scope.startTime.getMinutes());
-	          _this4._range.end.hours(_this4.Scope.endTime.getHours()).minutes(_this4.Scope.endTime.getMinutes());
+	          if (_this4._range.start && _this4._range.end) {
+	            _this4._range.start.hours(_this4.Scope.startTime.getHours()).minutes(_this4.Scope.startTime.getMinutes());
+	            _this4._range.end.hours(_this4.Scope.endTime.getHours()).minutes(_this4.Scope.endTime.getMinutes());
+	          }
 	          _this4.value = _this4.getRangeValue();
 	          _this4.updateTime();
 	        }
@@ -1145,6 +1162,11 @@
 	      this.isPickerVisible = false;
 	    }
 	  }, {
+	    key: 'isPickerOpen',
+	    value: function isPickerOpen() {
+	      return this.isPickerVisible;
+	    }
+	  }, {
 	    key: 'updateTime',
 	    value: function updateTime() {
 	      var range = arguments.length <= 0 || arguments[0] === undefined ? this._range : arguments[0];
@@ -1164,7 +1186,9 @@
 	        this.range.start = range.start;
 	        this.range.end = range.end;
 	      }
-	      this.Scope.startTime = this.Scope.endTime = new Date(0, 0, 0, 0, 0);
+	      this.Scope.startTime = new Date(this.range.start);
+	      this.Scope.endTime = new Date(this.range.end);
+	      //this.Scope.startTime = this.Scope.endTime = new Date(0, 0, 0, 0, 0);
 	    }
 	  }, {
 	    key: 'predefinedRangeSelected',
@@ -1192,8 +1216,8 @@
 	    key: 'discardChanges',
 	    value: function discardChanges() {
 	      var format = this.getFormat();
-	      var start = this.Moment(this.range.start, format);
-	      var end = this.Moment(this.range.end, format);
+	      var start = this.range.start === null ? null : this.Moment(this.range.start, format);
+	      var end = this.range.end === null ? null : this.Moment(this.range.end, format);
 	      this._range.start = start;
 	      this._range.end = end;
 	      this.value = this.getRangeValue();
@@ -1226,6 +1250,8 @@
 	            value = this.preRanges[index].name;
 	          }
 	        }
+	      } else if (this._range.start === null && this._range.end === null) {
+	        value = '';
 	      } else {
 	        value = this._range.start.format(format) + ' - ' + this._range.end.format(format);
 	      }
@@ -1254,7 +1280,7 @@
 	    value: function setDateRange(range) {
 	      this._range.start = range.start;
 	      this._range.end = range.end;
-	      this.applyChanges(false);'';
+	      this.applyChanges(false);
 	    }
 	  }, {
 	    key: '_getMinDay',

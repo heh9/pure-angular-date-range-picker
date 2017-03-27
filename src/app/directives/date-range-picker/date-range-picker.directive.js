@@ -53,7 +53,7 @@ class DateRangePickerController {
     Object.assign(api, {
       setCalendarPosition: (start, end) => {
         this.startCalendar = start;
-        if (this.linkedCalendars() || start.isSame(end, 'M')) {
+        if (this.linkedCalendars() || (start !== null && start.isSame(end, 'M'))) {
           this.endCalendar = this.startCalendar.clone().add(1, 'M');
         } else {
           this.endCalendar = end;
@@ -84,12 +84,16 @@ class DateRangePickerController {
     if (this.isMomentRange(this.range)) {
       start = this.range.start;
       end = this.range.end;
+      end = end.diff(start) >= 0 ? end : start.clone();
+    } else if (this.range.start === null && this.range.end === null) {
+      start = null;
+      end = null;
     } else {
       start = this.Moment(this.range.start, this.getFormat());
       end = this.Moment(this.range.end, this.getFormat());
+      end = end.diff(start) >= 0 ? end : start.clone();
     }
 
-    end = end.diff(start) >= 0 ? end : start.clone();
     this.rangeStart = start;
     this.rangeEnd = end;
     this.daysSelected = 2;
@@ -101,8 +105,8 @@ class DateRangePickerController {
       this.range.start = this.rangeStart;
       this.range.end = this.rangeEnd;
     } else {
-      this.range.start = this.rangeStart ? this.rangeStart.format(this.getFormat()) : null;
-      this.range.end = this.rangeEnd ? this.rangeEnd.format(this.getFormat()) : null;
+      this.range.start = this.rangeStart ? this.rangeStart : null;
+      this.range.end = this.rangeEnd ? this.rangeEnd : null;
     }
   }
 
@@ -268,6 +272,9 @@ class DateRangePickerController {
       }
 
       if (!this.startCalendar && !this.endCalendar) {
+        if (newStart === null) {
+          newStart = this.Moment(new Date()).startOf('day');
+        }
         this.startCalendar = newStart;
         this.endCalendar = newStart.clone().add(1, 'M');
       }
