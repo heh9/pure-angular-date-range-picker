@@ -214,21 +214,21 @@ class DateRangePickerController {
   daySelected(day) {
     switch (this.daysSelected) {
       case 0:
-        this.rangeStart = day;
+        this.rangeStart = angular.copy(day);
         this.daysSelected = 1;
         break;
       case 1:
         if (day.diff(this.rangeStart, 'days') < 0) {
-          this.rangeStart = day;
+          this.rangeStart = angular.copy(day);
         } else {
-          this.rangeEnd = day;
+          this.rangeEnd = angular.copy(day);
           this.daysSelected = 2;
           this.updateRange();
         }
         break;
       case 2:
         this.daysSelected = 1;
-        this.rangeStart = day;
+        this.rangeStart = angular.copy(day);
         this.rangeEnd = null;
         break;
     }

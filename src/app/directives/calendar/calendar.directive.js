@@ -89,7 +89,9 @@ class CalendarController {
     this.Scope.$watch(() => {
       return this.getMonth();
     }, (newMonth) => {
-      this.calendar = this.buildCalendar(newMonth);
+      if (newMonth) {
+        this.calendar = this.buildCalendar(newMonth);
+      }
     });
 
     this.Scope.$watchGroup([
