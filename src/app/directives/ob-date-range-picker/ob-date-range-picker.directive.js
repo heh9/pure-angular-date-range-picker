@@ -312,9 +312,12 @@ class ObDateRangePickerController {
       this.range.end = range.end;
     }
     this.Scope.startTime = new Date(this.range.start);
+    this.Scope.startTime.setHours(0);
     this.Scope.startTime.setSeconds(0);
     this.Scope.startTime.setMilliseconds(0);
     this.Scope.endTime = new Date(this.range.end);
+    this.Scope.endTime.setHours(23);
+    this.Scope.endTime.setMinutes(59);
     this.Scope.endTime.setSeconds(0);
     this.Scope.endTime.setMilliseconds(0);
     //this.Scope.startTime = this.Scope.endTime = new Date(0, 0, 0, 0, 0);

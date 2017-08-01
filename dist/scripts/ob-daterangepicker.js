@@ -42,15 +42,15 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	__webpack_require__(1);
 	module.exports = __webpack_require__(8);
 
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/* global moment:false */
 
@@ -70,9 +70,9 @@
 
 	angular.module('obDateRangePicker', []).constant('moment', moment).provider('dateRangePickerConf', _providersDateRangePickerProviderJs.DateRangePickerProvider).provider('datePickerConf', _providersDatePickerProviderJs.DatePickerProvider).directive('dateRangePicker', _directivesDateRangePickerDateRangePickerDirective.DateRangePicker).directive('obDaterangepicker', _directivesObDateRangePickerObDateRangePickerDirectiveJs.ObDateRangePicker).directive('calendar', _directivesCalendarCalendarDirective.Calendar).directive('obDaypicker', _directivesObDayPickerObDayPickerDirective.ObDayPicker);
 
-/***/ },
+/***/ }),
 /* 2 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	"use strict";
 
@@ -94,9 +94,9 @@
 	  };
 	}
 
-/***/ },
+/***/ }),
 /* 3 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	"use strict";
 
@@ -118,9 +118,9 @@
 	  };
 	}
 
-/***/ },
+/***/ }),
 /* 4 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -490,9 +490,9 @@
 	  return DateRangePickerController;
 	})();
 
-/***/ },
+/***/ }),
 /* 5 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -826,9 +826,9 @@
 	  return CalendarController;
 	})();
 
-/***/ },
+/***/ }),
 /* 6 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -1189,9 +1189,12 @@
 	        this.range.end = range.end;
 	      }
 	      this.Scope.startTime = new Date(this.range.start);
+	      this.Scope.startTime.setHours(0);
 	      this.Scope.startTime.setSeconds(0);
 	      this.Scope.startTime.setMilliseconds(0);
 	      this.Scope.endTime = new Date(this.range.end);
+	      this.Scope.endTime.setHours(23);
+	      this.Scope.endTime.setMinutes(59);
 	      this.Scope.endTime.setSeconds(0);
 	      this.Scope.endTime.setMilliseconds(0);
 	      //this.Scope.startTime = this.Scope.endTime = new Date(0, 0, 0, 0, 0);
@@ -1303,9 +1306,9 @@
 	  return ObDateRangePickerController;
 	})();
 
-/***/ },
+/***/ }),
 /* 7 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -1655,9 +1658,9 @@
 	  return ObDayPickerController;
 	})();
 
-/***/ },
+/***/ }),
 /* 8 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/*eslint-disable */
 	'use strict';
@@ -1686,7 +1689,7 @@
 	}
 	/*eslint-enable */
 
-/***/ }
+/***/ })
 /******/ ]);
 angular.module("obDateRangePicker").run(["$templateCache", function($templateCache) {$templateCache.put("app/directives/calendar/calendar.html","<div class=\"input-container\" ng-if=\"month._showInput()\"><label>{{month.Attrs.label}}</label> <input type=\"text\" ng-model=\"month.value\" ng-keypress=\"month.dateInputEntered($event, month.value)\" ng-blur=\"month.dateInputSelected($event, month.value)\"></div><div class=\"header\"><span class=\"arrow-btn left\" ng-if=\"month.showLeftArrow()\" ng-click=\"month.moveToPrev()\"></span> <span class=\"date\">{{month.getFormattedMonth(month.calendar.currentCalendar)}}</span> <span class=\"arrow-btn right\" ng-if=\"month.showRightArrow()\" ng-click=\"month.moveToNext(1)\"></span></div><div class=\"board\"><div class=\"days-of-week\"><span class=\"day-name\" ng-repeat=\"day in month.daysName track by $index\">{{day}}</span></div><div class=\"weeks\"><div ng-repeat=\"week in month.calendar.monthWeeks track by $index\"><span class=\"day\" ng-repeat=\"day in week track by $index\" ng-class=\"{ \'selected\': day.selected, \'current\': day.currentDay, \'other-month\': !day.currentMonth, \'in-range\': day.inRange, \'range-start\': day.rangeStart, \'range-end\': day.rangeEnd, \'disabled\': day.disabled }\" ng-click=\"month.daySelected(day)\">{{day.mo.format(\'D\')}}</span></div></div></div>");
 $templateCache.put("app/directives/date-range-picker/date-range-picker.html","<calendar class=\"calendar\" api=\"picker.startCalendarApi\" min-day=\"picker.minDay()\" max-day=\"picker.maxDay()\" week-start=\"picker.weekStart()\" month=\"picker.startCalendar\" interceptors=\"picker.startCalendarInterceptors\" range-start=\"picker.rangeStart\" range-end=\"picker.rangeEnd\" selected-day=\"picker.rangeStart\" max-month=\"picker.endCalendar\" week-days-name=\"picker.weekDaysName()\" month-format=\"picker.monthFormat()\" input-format=\"picker.inputFormat()\" label=\"Start Date\"></calendar><calendar class=\"calendar\" api=\"picker.endCalendarApi\" min-day=\"picker.minDay()\" max-day=\"picker.maxDay()\" week-start=\"picker.weekStart()\" month=\"picker.endCalendar\" interceptors=\"picker.endCalendarInterceptors\" range-start=\"picker.rangeStart\" range-end=\"picker.rangeEnd\" selected-day=\"picker.rangeEnd\" min-month=\"picker.startCalendar\" week-days-name=\"picker.weekDaysName()\" month-format=\"picker.monthFormat()\" input-format=\"picker.inputFormat()\" label=\"End Date\"></calendar>");
