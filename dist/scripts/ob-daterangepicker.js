@@ -1490,6 +1490,12 @@
 	        }
 	      });
 
+	      this.Scope.$watch('dayPicker.selectedDay', function (newVal) {
+	        if (newVal !== _this2.Moment(_this2._selectedDay).format(_this2.getFormat())) {
+	          _this2.daySelected(_this2.Moment(newVal));
+	        }
+	      });
+
 	      this.Scope.$watch('time', function () {
 	        if (_this2.Scope.time instanceof Date) {
 	          _this2._selectedDay.hours(_this2.Scope.time.getHours()).minutes(_this2.Scope.time.getMinutes());
