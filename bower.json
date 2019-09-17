@@ -1,6 +1,6 @@
 {
   "name": "ob-daterangepicker-forked",
-  "version": "0.10.11",
+  "version": "0.10.12",
   "description": "forked version of ob-daterangepicker with hours picker and some fixes",
   "main": [
     "dist/scripts/ob-daterangepicker.js",

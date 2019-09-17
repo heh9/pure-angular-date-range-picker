@@ -151,6 +151,12 @@ class ObDayPickerController {
       }
     });
 
+    this.Scope.$watch('dayPicker.selectedDay', (newVal) => {
+      if (newVal !== this.Moment(this._selectedDay).format(this.getFormat())) {
+        this.daySelected(this.Moment(newVal))
+      }
+    });
+
     this.Scope.$watch('time', () => {
       if (this.Scope.time instanceof Date) {
         this._selectedDay.hours(this.Scope.time.getHours()).minutes(this.Scope.time.getMinutes());
