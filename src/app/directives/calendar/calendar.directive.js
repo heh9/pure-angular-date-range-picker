@@ -172,6 +172,10 @@ class CalendarController {
   }
 
   moveToNext() {
+    if (this.showYearSelector) {
+      this.moveToNextYearArr();
+      return;
+    }
     if (this.interceptors.moveToNextClicked) {
       this.interceptors.moveToNextClicked.call(this.interceptors.context);
     } else {
@@ -180,11 +184,27 @@ class CalendarController {
   }
 
   moveToPrev() {
+    if (this.showYearSelector) {
+      this.moveToPrevYearArr();
+      return;
+    }
     if (this.interceptors.moveToPrevClicked) {
       this.interceptors.moveToPrevClicked.call(this.interceptors.context);
     } else {
       this.moveCalenderByMonth(-1);
     }
+  }
+
+  moveToNextYearArr() {
+    this.minYear = this.yearsArray[this.yearsArray.length - 1] + 1;
+    this.maxYear = this.minYear + 15;
+    this.yearsArray = this.getYearsArray( this.minYear,  this.maxYear);
+  }
+
+  moveToPrevYearArr() {
+    this.maxYear = this.yearsArray[0] - 1;
+    this.minYear = this.maxYear - 15;
+    this.yearsArray = this.getYearsArray( this.minYear,  this.maxYear);
   }
 
   getMonthDateRange(year, month) {
@@ -221,6 +241,7 @@ class CalendarController {
   }
 
   dateInputSelected(ev, value) {
+    this.showYearSelector = false;
     let day = this.Moment(value, this.getInputFormat(), true);
 
     if (day.isValid()) {
@@ -237,6 +258,29 @@ class CalendarController {
         }
       }
     }
+  }
+
+  openYearSelector(day) {
+    this.showYearSelector = true;
+    this.minYear = day.year();
+    this.maxYear = day.year() + 15;
+    this.yearsArray = this.getYearsArray( this.minYear,  this.maxYear);
+  }
+
+  onYearSelect(year) {
+    if (year === (this.calendar.currentCalendar.year())) {
+      this.showYearSelector = false;
+      return;
+    }
+    this.showYearSelector = false;
+    const selectedYear = angular.copy(this.calendar.currentCalendar);
+    this.daySelected({mo: selectedYear.year(year)});
+  }
+
+  getYearsArray(min, max) {
+    return Array.from({length: max - min + 1}, (_, i) => {
+      return min + i;
+    })
   }
 
   getFormattedMonth(day) {
