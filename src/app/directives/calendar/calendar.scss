@@ -11,6 +11,7 @@ calendar {
 
   .input-container {
     position: relative;
+    cursor: pointer;
 
     label {
       position: relative;
@@ -43,7 +44,7 @@ calendar {
     border: 1px solid $borderColor;
     border-radius: $inputBorderRadius $inputBorderRadius 0 0;
 
-    .date {
+    .date, .years {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -97,6 +98,28 @@ calendar {
 
     border: 1px solid $borderColor;
     border-radius: 0 0 $inputBorderRadius $inputBorderRadius;
+
+    .yearWrapper {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      .year {
+        width: 21%;
+        height: 30px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        span {
+          padding: 2px;
+          font-size: 14px;
+        }
+        &.selected span{
+          background: pink;
+          color: $white;
+        }
+      }
+    }
 
     .cell {
       display: inline-block;

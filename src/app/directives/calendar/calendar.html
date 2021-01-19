@@ -8,11 +8,16 @@
 
 <div class="header">
   <span class="arrow-btn left" ng-if="month.showLeftArrow()" ng-click="month.moveToPrev()"></span>
-  <span class="date">{{month.getFormattedMonth(month.calendar.currentCalendar)}}</span>
+  <span class="date" ng-if="!month.showYearSelector" ng-click="month.openYearSelector(month.calendar.currentCalendar)">
+    {{month.getFormattedMonth(month.calendar.currentCalendar)}}
+  </span>
+  <span class="years" ng-if="month.showYearSelector" ng-click="month.showYearSelector = false">
+    {{month.minYear}} - {{month.maxYear}}
+  </span>
   <span class="arrow-btn right" ng-if="month.showRightArrow()" ng-click="month.moveToNext(1)"></span>
 </div>
 
-<div class="board">
+<div class="board" ng-if="!month.showYearSelector">
   <div class="days-of-week">
     <span class="day-name" ng-repeat="day in month.daysName track by $index">{{day}}</span>
   </div>
@@ -36,3 +41,12 @@
     </div>
   </div>
 </div>
+
+<div class="board" ng-if="month.showYearSelector">
+  <div class="yearWrapper">
+    <div class="year" ng-class="{'selected': year === month.calendar.currentCalendar.year()}" ng-click="month.onYearSelect(year)" ng-repeat="year in month.yearsArray">
+      <span>{{year}}</span>
+    </div>
+  </div>
+</div>
+
