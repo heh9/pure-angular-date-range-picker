@@ -18,7 +18,8 @@ export function Calendar() {
       monthFormat: '&',
       inputFormat: '&',
       showInput: '&',
-      api: '=?'
+      api: '=?',
+      canSelectYear: '=?'
     },
     templateUrl: 'app/directives/calendar/calendar.html',
     controller: CalendarController,
@@ -115,6 +116,7 @@ class CalendarController {
         day.inRange = this.isInRange(day.mo);
         day.rangeStart = day.mo.isSame(rangeStart || null, 'day');
         day.rangeEnd = day.mo.isSame(rangeEnd || null, 'day');
+        day.milliseconds = day.mo.valueOf();
         if (minDay) {
           day.disabled = day.mo.isBefore(minDay, 'day');
         }
@@ -172,10 +174,6 @@ class CalendarController {
   }
 
   moveToNext() {
-    if (this.showYearSelector) {
-      this.moveToNextYearArr();
-      return;
-    }
     if (this.interceptors.moveToNextClicked) {
       this.interceptors.moveToNextClicked.call(this.interceptors.context);
     } else {
@@ -184,10 +182,6 @@ class CalendarController {
   }
 
   moveToPrev() {
-    if (this.showYearSelector) {
-      this.moveToPrevYearArr();
-      return;
-    }
     if (this.interceptors.moveToPrevClicked) {
       this.interceptors.moveToPrevClicked.call(this.interceptors.context);
     } else {
@@ -261,10 +255,12 @@ class CalendarController {
   }
 
   openYearSelector(day) {
-    this.showYearSelector = true;
-    this.minYear = day.year();
-    this.maxYear = day.year() + 15;
-    this.yearsArray = this.getYearsArray( this.minYear,  this.maxYear);
+    if (this.canSelectYear) {
+      this.showYearSelector = true;
+      this.minYear = day.year();
+      this.maxYear = day.year() + 15;
+      this.yearsArray = this.getYearsArray( this.minYear,  this.maxYear);
+    }
   }
 
   onYearSelect(year) {
@@ -273,8 +269,7 @@ class CalendarController {
       return;
     }
     this.showYearSelector = false;
-    const selectedYear = angular.copy(this.calendar.currentCalendar);
-    this.daySelected({mo: selectedYear.year(year)});
+    this.interceptors.selectYear(year);
   }
 
   getYearsArray(min, max) {
