@@ -10,6 +10,10 @@ ob-daterangepicker {
   cursor: pointer;
   font-size: $mainFontSize;
 
+  date-range-picker {
+    display: flex;
+  }
+
   .picker-dropdown-container {
     position: relative;
 

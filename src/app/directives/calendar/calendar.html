@@ -6,15 +6,15 @@
          ng-blur="month.dateInputSelected($event, month.value)"/>
 </div>
 
-<div class="header">
+<div class="header" ng-if="!month.showYearSelector">
   <span class="arrow-btn left" ng-if="month.showLeftArrow()" ng-click="month.moveToPrev()"></span>
-  <span class="date" ng-if="!month.showYearSelector" ng-click="month.openYearSelector(month.calendar.currentCalendar)">
-    {{month.getFormattedMonth(month.calendar.currentCalendar)}}
-  </span>
-  <span class="years" ng-if="month.showYearSelector" ng-click="month.showYearSelector = false">
-    {{month.minYear}} - {{month.maxYear}}
-  </span>
+  <span class="date" ng-click="month.openYearSelector(month.calendar.currentCalendar)">{{month.getFormattedMonth(month.calendar.currentCalendar)}}</span>
   <span class="arrow-btn right" ng-if="month.showRightArrow()" ng-click="month.moveToNext(1)"></span>
+</div>
+<div class="header" ng-if="month.showYearSelector">
+  <span class="arrow-btn left" ng-click="month.moveToPrevYearArr()"></span>
+  <span class="years" ng-if="month.showYearSelector" ng-click="month.showYearSelector = false">{{month.minYear}} - {{month.maxYear}}</span>
+  <span class="arrow-btn right"  ng-click="month.moveToNextYearArr()"></span>
 </div>
 
 <div class="board" ng-if="!month.showYearSelector">
@@ -25,7 +25,7 @@
   <div class="weeks">
     <div ng-repeat="week in month.calendar.monthWeeks track by $index">
         <span class="day"
-              ng-repeat="day in week track by $index"
+              ng-repeat="day in week track by day.milliseconds"
               ng-class="{
                 'selected': day.selected,
                 'current': day.currentDay,
@@ -49,4 +49,3 @@
     </div>
   </div>
 </div>
-

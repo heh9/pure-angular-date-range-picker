@@ -18,7 +18,8 @@ export function ObDateRangePicker() {
       autoApply: '&',
       disabled: '&',
       calendarsAlwaysOn: '&',
-      api: '=?'
+      api: '=?',
+      canSelectYear: '=?'
     },
     controller: ObDateRangePickerController,
     templateUrl: 'app/directives/ob-date-range-picker/ob-date-range-picker.html',

@@ -13,7 +13,8 @@ export function DateRangePicker() {
       inputFormat: '&',
       weekDaysName: '&',
       linkedCalendars: '&',
-      interceptors: '&'
+      interceptors: '&',
+      canSelectYear: '=?'
     },
     templateUrl: 'app/directives/date-range-picker/date-range-picker.html',
     controller: DateRangePickerController,
@@ -118,6 +119,9 @@ class DateRangePickerController {
       moveToNextClicked: () => {
         this.moveCalenders(1, 'start')
       },
+      selectYear: (year) => {
+        this.moveCalendersToYear(year, 'start')
+      },
       daySelected: (day) => {
         this.dayInStartSelected(day);
         this.daySelected(day);
@@ -136,6 +140,9 @@ class DateRangePickerController {
       },
       moveToNextClicked: () => {
         this.moveCalenders(1, 'end')
+      },
+      selectYear: (year) => {
+        this.moveCalendersToYear(year, 'end')
       },
       daySelected: (day) => {
         this.dayInEndSelected(day);
@@ -243,6 +250,19 @@ class DateRangePickerController {
         this.startCalendar = this.startCalendar.clone().add(month, 'M');
       } else {
         this.endCalendar = this.endCalendar.clone().add(month, 'M');
+      }
+    }
+  }
+
+  moveCalendersToYear(year, calendar) {
+    if (this.areCalendarsLinked()) {
+      this.startCalendar = this.startCalendar.clone().year(year);
+      this.endCalendar = this.endCalendar.clone().year(year);
+    } else {
+      if (calendar === 'start') {
+        this.startCalendar = this.startCalendar.clone().year(year);
+      } else {
+        this.endCalendar = this.endCalendar.clone().year(year);
       }
     }
   }
