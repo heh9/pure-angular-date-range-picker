@@ -27,8 +27,7 @@ export function ObDayPicker() {
     link: {
       pre: function (scope, elem, attrs, ctrl) {
         ctrl.init();
-      },
-      post: function postLink(scope, iElement, iAttrs, controller) {}
+      }
     }
   };
 
@@ -121,7 +120,7 @@ class ObDayPickerController {
       daySelected: this.daySelected.bind(this),
       selectYear: (year) => {
         this.moveCalendarToYear(year)
-      },
+      }
     }
   }
 
@@ -186,7 +185,7 @@ class ObDayPickerController {
 
   daySelected(day, timeout = 100) {
     this.applyValidity(this.checkIfDayIsValid(day));
-    if (!day.isSame(this._selectedDay, 'day')) {
+    if (!day.isSame(this.selectedDay, 'day')) {
       this.calendarApi.render();
       this.value = this.Moment(day).format(this.getFormat());
       this._selectedDay = day;

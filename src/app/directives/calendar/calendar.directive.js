@@ -28,8 +28,7 @@ export function Calendar() {
     link: {
       pre: function (scope, elem, attrs, ctrl) {
         ctrl.init();
-      },
-      post: function postLink(scope, iElement, iAttrs, controller) {}
+      }
     }
   };
 
