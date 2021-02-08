@@ -17,14 +17,18 @@ export function ObDayPicker() {
       formName: '@name',
       isValidDateEnabled: '&validDay',
       autoApply: '&',
-      api: '=?'
+      api: '=?',
+      canSelectYear: '=?'
     },
     controller: ObDayPickerController,
     templateUrl: 'app/directives/ob-day-picker/ob-day-picker.html',
     controllerAs: 'dayPicker',
     bindToController: true,
-    link: (scope, elem, attrs, ctrl) => {
-      ctrl.init();
+    link: {
+      pre: function (scope, elem, attrs, ctrl) {
+        ctrl.init();
+      },
+      post: function postLink(scope, iElement, iAttrs, controller) {}
     }
   };
 
@@ -114,7 +118,10 @@ class ObDayPickerController {
 
   setCalendarInterceptors() {
     this.calendarInterceptors = {
-      daySelected: this.daySelected.bind(this)
+      daySelected: this.daySelected.bind(this),
+      selectYear: (year) => {
+        this.moveCalendarToYear(year)
+      },
     }
   }
 
@@ -283,6 +290,10 @@ class ObDayPickerController {
     }
 
     this.onApply({day: this.selectedDay});
+  }
+
+  moveCalendarToYear(year) {
+    this._selectedDay = this._selectedDay.clone().year(year);
   }
 
   getSelectedDay() {
