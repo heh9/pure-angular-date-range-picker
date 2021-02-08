@@ -559,8 +559,7 @@
 	    link: {
 	      pre: function pre(scope, elem, attrs, ctrl) {
 	        ctrl.init();
-	      },
-	      post: function postLink(scope, iElement, iAttrs, controller) {}
+	      }
 	    }
 	  };
 
@@ -1422,8 +1421,7 @@
 	    link: {
 	      pre: function pre(scope, elem, attrs, ctrl) {
 	        ctrl.init();
-	      },
-	      post: function postLink(scope, iElement, iAttrs, controller) {}
+	      }
 	    }
 	  };
 
@@ -1603,7 +1601,7 @@
 	      var timeout = arguments.length <= 1 || arguments[1] === undefined ? 100 : arguments[1];
 
 	      this.applyValidity(this.checkIfDayIsValid(day));
-	      if (!day.isSame(this._selectedDay, 'day')) {
+	      if (!day.isSame(this.selectedDay, 'day')) {
 	        this.calendarApi.render();
 	        this.value = this.Moment(day).format(this.getFormat());
 	        this._selectedDay = day;
