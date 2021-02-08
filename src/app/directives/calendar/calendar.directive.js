@@ -25,8 +25,11 @@ export function Calendar() {
     controller: CalendarController,
     controllerAs: 'month',
     bindToController: true,
-    link: (scope, elem, attrs, ctrl) => {
-      ctrl.init();
+    link: {
+      pre: function (scope, elem, attrs, ctrl) {
+        ctrl.init();
+      },
+      post: function postLink(scope, iElement, iAttrs, controller) {}
     }
   };
 
